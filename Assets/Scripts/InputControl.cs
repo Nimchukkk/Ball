@@ -5,6 +5,7 @@ public class InputControl : MonoBehaviour
     [SerializeField] private Line _line;
     
     private Vector3 _startPosition;
+    private Vector3 _endPosition;
     private Vector3 _direction;
  
     private void Update()
@@ -27,8 +28,8 @@ public class InputControl : MonoBehaviour
     private void MouseButtonDown() => _startPosition = Input.mousePosition;
     private void MouseButton()
     {
-        var endPosition = Input.mousePosition;
-        var differenceMousePosition = (_startPosition - endPosition);
+        _endPosition = Input.mousePosition;
+        var differenceMousePosition = (_startPosition - _endPosition);
         _direction = new Vector3 (differenceMousePosition.x, 0f, differenceMousePosition.y);
         
         _line.ShowLine();
@@ -37,6 +38,8 @@ public class InputControl : MonoBehaviour
 
     private void MouseButtonUp()
     {
+        var speed = Vector3.Distance(_startPosition, _endPosition);
+        _ball.SetSpeed(speed / 500);
         _line.HideLine();
         _ball.SetDirectionAndStartMove(_direction);
     }

@@ -467,7 +467,7 @@ GameObject:
   - component: {fileID: 527685281}
   - component: {fileID: 527685280}
   - component: {fileID: 527685279}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -726,7 +726,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scoreManager: {fileID: 787013237}
-  _speed: 0.05
 --- !u!1 &686171769
 GameObject:
   m_ObjectHideFlags: 0
@@ -1266,7 +1265,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.47208917, y: 0.000076187134, z: -0.00002209453, w: 0.8815508}
+  m_LocalRotation: {x: 0.47208917, y: 0.00007840181, z: -0.000022736313, w: 0.8815508}
   m_LocalPosition: {x: 0.000008838479, y: 8.860105, z: -6.4467993}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
