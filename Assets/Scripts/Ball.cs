@@ -6,15 +6,29 @@ public class Ball : MonoBehaviour
 {
     [SerializeField] private ScoreManager _scoreManager;
 
+    private CharacterController _characterController;
     private Transform _transform;
     private Vector3 _direction;
     private float _speed;
-    private int _obstacleLayer;
 
     private void Awake()
     {
+        _characterController = GetComponent<CharacterController>();
         _transform = GetComponent<Transform>();
-        _obstacleLayer = LayerMask.NameToLayer("Obstacle");
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.GetComponent<Partition>())
+        {
+            _direction = Vector3.Reflect(_direction, hit.normal);
+        }
+
+        if (hit.gameObject.GetComponent<Coin>())
+        {
+            _scoreManager.StartAddScore();
+            Destroy(hit.gameObject);
+        }
     }
 
     public void SetDirectionAndStartMove(Vector3 direction)
@@ -26,48 +40,25 @@ public class Ball : MonoBehaviour
 
     public void SetSpeed(float speed)
     {
-        _speed = speed;
+        _speed = Mathf.Clamp(speed, 0, 0.5f);
     }
 
     private IEnumerator Move()
     {
-        var currentSpeed = Mathf.Clamp(_speed, 0, 0.45f);
-        ;
-        var numberOfFramesOfBallMovement = 1000 * currentSpeed;
-        var slowDown = currentSpeed / numberOfFramesOfBallMovement;
+        var numberOfFramesOfBallMovement = 850 * _speed;
+        var slowDown = _speed / numberOfFramesOfBallMovement;
 
         for (var i = 0; i < (int)numberOfFramesOfBallMovement; i++)
         {
-            _transform.Translate(_direction * (currentSpeed / 10 * Time.deltaTime), Space.World);
+            _characterController.Move(_direction * _speed /2f);
 
-            var directionRotation = new Vector3(_direction.z, -_direction.y, -_direction.x);
-            var speedRotation = currentSpeed * 1250f;
-            _transform.Rotate(directionRotation, speedRotation * Time.deltaTime, Space.World);
+            _transform.Rotate(new Vector3(_direction.z, -_direction.y, -_direction.x), 
+                _speed * 2250f * Time.deltaTime, 
+                Space.World);
 
-            currentSpeed -= slowDown;
+            _speed -= slowDown;
 
-            var ray = new Ray(_transform.position, _direction);
-            const float maxDistance = 0.5f;
-            if (Physics.Raycast(ray, out var hit, maxDistance))
-            {
-                if (hit.collider.isTrigger)
-                {
-                    _scoreManager.StartAddScore();
-                    Destroy(hit.collider.gameObject);
-                }
-                else
-                {
-                    var reflectDirection = Vector3.Reflect(_direction, hit.normal);
-                    _direction = reflectDirection;
-                }
-            }
-            
             yield return null;
         }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.DrawWireSphere(transform.position , .65f);
     }
 }

@@ -7,6 +7,7 @@ public class InputControl : MonoBehaviour
     private Vector3 _startPosition;
     private Vector3 _endPosition;
     private Vector3 _direction;
+    private float _distance;
  
     private void Update()
     {
@@ -30,16 +31,16 @@ public class InputControl : MonoBehaviour
     {
         _endPosition = Input.mousePosition;
         var differenceMousePosition = (_startPosition - _endPosition);
-        _direction = new Vector3 (differenceMousePosition.x, 0f, differenceMousePosition.y);
-        
+        _direction = new Vector3 (differenceMousePosition.x, 0f, differenceMousePosition.y).normalized;
+
+        _distance = Vector3.Distance(_startPosition, _endPosition);
         _line.ShowLine();
-        _line.SetLine(_direction / 35f);
+        _line.SetLine(_direction * _distance / 35f);
     }
 
     private void MouseButtonUp()
     {
-        var speed = Vector3.Distance(_startPosition, _endPosition);
-        _ball.SetSpeed(speed / 500);
+        _ball.SetSpeed(_distance / 500);
         _line.HideLine();
         _ball.SetDirectionAndStartMove(_direction);
     }
